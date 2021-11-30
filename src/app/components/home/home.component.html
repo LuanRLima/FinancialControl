@@ -1,0 +1,78 @@
+<br>
+<div class="container">
+
+  <div class="row">
+    <div class="card text-white bg-success mb-3" style="max-width: 18rem; margin-left: 10px;">
+      <div class="card-header">Valor Total</div>
+      <div class="card-body">
+        <h5 class="card-title"> <i class="fas fa-money-bill-wave"></i> R$ {{valorTotal}}</h5>
+      </div>
+    </div>
+    <div class="card text-white bg-danger mb-3" style="max-width: 18rem; margin-left: 10px">
+      <div class="card-header">Saidas</div>
+      <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-money-bill-wave"></i> R$ {{saida}}</h5>
+      </div>
+    </div>
+    <div class="card text-white bg-primary mb-3" style="max-width: 18rem; margin-left: 10px;">
+      <div class="card-header">Entradas</div>
+      <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-money-bill-wave"></i> R$ {{entrada}}</h5>
+      </div>
+    </div>
+    <div class="card text-white bg-warning mb-3" style="max-width: 18rem; margin-left: 10px;">
+      <div class="card-header">Investimentos</div>
+      <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-money-bill-wave"></i> R$ {{investimentos}}</h5>
+      </div>
+    </div>
+
+  </div>
+  <table class="table">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Tipo Movimentação</th>
+        <th scope="col">Valor</th>
+        <th scope="col">Data</th>
+        <th scope="col">Itens</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let movimentacao of finances; let i = index;">
+      <tr>
+        <th scope="row">{{i + 1}}</th>
+        <td>{{movimentacao.tipo}}</td>
+        <td>{{movimentacao.valor}}</td>
+        <td>{{movimentacao.data}}</td>
+        <td>
+          <button type="button" class="btn btn-danger" data-toggle="modal" [attr.data-target]="'#exampleModal-' + i">
+            Exculir
+          </button>
+        </td>
+      </tr>
+      <div class="modal fade" id="exampleModal-{{i}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Deseja realmente excluir?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <h5> <b>Tipo Movimentação:</b> {{movimentacao.tipo}}</h5>
+              <h5> <b>Valor:</b> {{movimentacao.valor}}</h5>
+              <h5> <b>Data:</b> {{movimentacao.data}}</h5>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-danger" (click)="excluirItem(i)"
+                data-dismiss="modal">Excluir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </tbody>
+  </table>
+</div>
