@@ -1,35 +1,55 @@
 <br>
 <div class="container">
-
-  <div class="row">
-    <div class="card text-white bg-success mb-3" style="max-width: 18rem; margin-left: 10px;">
-      <div class="card-header">Valor Total</div>
-      <div class="card-body">
-        <h5 class="card-title"> <i class="fas fa-money-bill-wave"></i> R$ {{valorTotal}}</h5>
-      </div>
-    </div>
-    <div class="card text-white bg-danger mb-3" style="max-width: 18rem; margin-left: 10px">
-      <div class="card-header">Saidas</div>
-      <div class="card-body">
-        <h5 class="card-title"><i class="fas fa-money-bill-wave"></i> R$ {{saida}}</h5>
-      </div>
-    </div>
-    <div class="card text-white bg-primary mb-3" style="max-width: 18rem; margin-left: 10px;">
-      <div class="card-header">Entradas</div>
-      <div class="card-body">
-        <h5 class="card-title"><i class="fas fa-money-bill-wave"></i> R$ {{entrada}}</h5>
-      </div>
-    </div>
-    <div class="card text-white bg-warning mb-3" style="max-width: 18rem; margin-left: 10px;">
-      <div class="card-header">Investimentos</div>
-      <div class="card-body">
-        <h5 class="card-title"><i class="fas fa-money-bill-wave"></i> R$ {{investimentos}}</h5>
-      </div>
-    </div>
-
+  <app-cards [name]="'luan'"
+            [valorTotal]="valorTotal"
+            [saida]="saida"
+            [investimentos]="investimentos"
+            [entrada]="entrada"
+  >
+  </app-cards>
+  <div>
+    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#exampleModal">Adicionar</button>
   </div>
+  <br>
+  <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Adcionar Despesas ou Ganho</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Tipo</label>
+            <select class="form-control" [(ngModel)]="financeModel.tipo" id="tipo" name="tipo">
+              <option value="Entrada">Entrada</option>
+              <option value="Saida">Saida</option>
+              <option value="Investimento">Investimento</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Valor</label>
+            <input type="number" class="form-control" id="valor" name="valor" [(ngModel)]="financeModel.valor" placeholder="Valor">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Data</label>
+            <input type="datetime" class="form-control" id="valor" name="valor" [(ngModel)]="financeModel.data">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" (click)="createFinance()" data-dismiss="modal" >Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
   <table class="table">
-    <thead class="table-dark">
+    <thead class="thead-dark">
       <tr>
         <th scope="col">#</th>
         <th scope="col">Tipo Movimentação</th>
@@ -38,15 +58,18 @@
         <th scope="col">Itens</th>
       </tr>
     </thead>
-    <tbody *ngFor="let movimentacao of finances; let i = index;">
+    <tbody *ngFor="let movimentacao of financas; let i = index;">
       <tr>
         <th scope="row">{{i + 1}}</th>
         <td>{{movimentacao.tipo}}</td>
-        <td>{{movimentacao.valor}}</td>
+        <td>R$ {{movimentacao.valor}}</td>
         <td>{{movimentacao.data}}</td>
         <td>
           <button type="button" class="btn btn-danger" data-toggle="modal" [attr.data-target]="'#exampleModal-' + i">
             Exculir
+          </button>
+          <button type="button" class="btn btn-waring" data-toggle="modal" [attr.data-target]="'#editModal-' + i">
+            Editar
           </button>
         </td>
       </tr>
@@ -66,13 +89,44 @@
               <h5> <b>Data:</b> {{movimentacao.data}}</h5>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-danger" (click)="excluirItem(i)"
-                data-dismiss="modal">Excluir</button>
+              <button type="button" class="btn btn-danger" (click)="excluir(i)" data-dismiss="modal">Excluir</button>
             </div>
           </div>
         </div>
       </div>
+      <div class="modal fade" id="editModal-{{i}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar Modal</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Tipo</label>
+              <select class="form-control" [(ngModel)]="movimentacao.tipo" id="tipo" name="tipo">
+                <option value="Entrada">Entrada</option>
+                <option value="Saida">Saida</option>
+                <option value="Investimento">Investimento</option>
+              </select>
+            </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Valor</label>
+            <input type="number" class="form-control" [(ngModel)]="movimentacao.valor" id="valor" name="valor" placehoder="valor">
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Data</label>
+            <input type="date" class="form-control" [(ngModel)]="movimentacao.data" id="valor" >
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sucess" (click)="recalcular()" data-dismiss="modal">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
     </tbody>
   </table>
 </div>
